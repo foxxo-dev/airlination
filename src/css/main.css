@@ -1,0 +1,27 @@
+body {
+  color: var(--primary, red);
+  font-size: 50px;
+}
+.plane_info_container {
+  min-width: 600px;
+  color: white;
+  background: var(--primary, red);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+}
+.plane_info_container * {
+  margin-bottom: 50px;
+}
+.plane_info_container *:not(.plane_info_name) {
+  color: #ccc;
+}
+.plane_info_name {
+  font-size: 80px;
+  font-weight: 600;
+}
+.plane_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

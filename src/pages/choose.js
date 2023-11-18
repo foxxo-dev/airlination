@@ -1,9 +1,23 @@
 import '../css/App.css';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getData } from '../script/saveGame';
 
 const Choose = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkIfData() {
+      const preSavedData = await getData();
+
+      console.log(JSON.stringify(preSavedData));
+
+      if (JSON.stringify(preSavedData) !== undefined) {
+        navigate(`/main/${preSavedData.name}/${preSavedData.id}`);
+      }
+    }
+    checkIfData();
+  }, []);
 
   const [isWorld, setIsWorld] = useState(true);
   const [isDomestic, setIsDomestic] = useState(false);
