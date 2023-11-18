@@ -1,0 +1,108 @@
+@import 'variables.css';
+body {
+  display: grid;
+  place-items: center;
+}
+.App {
+  text-align: center;
+  background-color: var(--bg, black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  color: var(--primary, red);
+  padding: 150px;
+  width: min-content;
+  border-radius: 16px;
+  border: 5px solid var(--primary, red);
+  position: relative;
+}
+
+.App form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  font-size: 20px;
+  gap: 10px;
+}
+
+#checkbox_container {
+  display: flex;
+  width: 320px;
+  flex-direction: row;
+}
+
+.checkbox_label_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 320px;
+}
+
+.checkbox_label_container label {
+  width: 100%;
+  font-weight: 600;
+  color: var(--primary, red);
+  text-transform: uppercase;
+}
+
+.checkbox_label_container input {
+  all: unset;
+  background: white;
+  width: 50px;
+  aspect-ratio: 1;
+  cursor: pointer;
+  position: relative;
+  border-radius: 10px;
+  box-shadow: white 0px 0px 0px 0px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.checkbox_label_container input:not(:checked) {
+  filter: brightness(0.7);
+}
+.checkbox_label_container input::after {
+  content: '';
+  display: block;
+  width: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--primary, red);
+  filter: brightness(0.5);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.checkbox_label_container input:checked::after {
+  opacity: 1;
+}
+
+.checkbox_label_container input:checked {
+  box-shadow: white 0px 0px 15px -1px;
+}
+
+form input[type='text'] {
+  all: unset;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary, red);
+  text-transform: uppercase;
+}
+button {
+  width: calc(100% - 4rem);
+  position: absolute;
+  bottom: 1rem;
+}

@@ -1,0 +1,19 @@
+:root {
+  --primary: #e55021;
+  --bg: #212225;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--bg, black);
+}
