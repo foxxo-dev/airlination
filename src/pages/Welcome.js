@@ -28,7 +28,8 @@ const Welcome = () => {
           !res ||
           res === undefined ||
           res === null ||
-          Object.keys(res).length !== 0
+          Object.keys(res).length !== 0 ||
+          JSON.stringify(res) === '{}'
         ) {
           console.log('No data saved, saving initial data');
           console.log('Initial data:', initData(name, id));
@@ -39,6 +40,8 @@ const Welcome = () => {
 
           console.log('%cRES after init', 'color: red; font-size: 15px;');
           console.log(responseData);
+        } else {
+          console.log('Existing data exists, data is ' + JSON.stringify(res));
         }
       } catch (err) {
         alert('Application Exited With Error: ' + err);
