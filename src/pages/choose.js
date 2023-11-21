@@ -13,10 +13,12 @@ const Choose = () => {
       console.log(JSON.stringify(preSavedData));
 
       if (
-        JSON.stringify(preSavedData) !== undefined ||
-        preSavedData !== null ||
-        JSON.stringify(preSavedData) !== '{}'
+        preSavedData !== undefined &&
+        preSavedData !== null &&
+        JSON.stringify(preSavedData) !== '{}' &&
+        Object.keys(preSavedData).length !== 0
       ) {
+        console.log('JSON IS NOT EMPTY');
         navigate(`/main/${preSavedData.name}/${preSavedData.id}`);
       }
     }
