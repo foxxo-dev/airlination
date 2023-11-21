@@ -2,6 +2,7 @@ async function getData() {
   return await fetch('http://localhost:3001/getData')
     .then((response) => {
       if (!response.ok) {
+        console.log(response.json());
         throw new Error('Network response was not ok');
       }
       return response.json();

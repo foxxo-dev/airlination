@@ -5,25 +5,33 @@ const app = express();
 const port = 3001; // Change the port as needed
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200
+  })
+);
 
 app.get('/getData', (req, res) => {
-  if (!fs.existsSync('./data.json')) {
-    fs.writeFileSync('./data.json', JSON.stringify({}));
+  let data = {};
+  if (fs.existsSync('data.json')) {
+    const fileContent = fs.readFileSync('./data.json', 'utf-8');
+    if (fileContent.trim() !== '') {
+      data = JSON.parse(fileContent);
+    }
   }
-  const data = JSON.parse(fs.readFileSync('./data.json'));
   console.log(data);
   res.json(data);
 });
 
-app.post('/saveData', (req, res) => {
+app.get('/saveData', async (req, res) => {
   const data = req.body;
-  fs.writeFileSync('data.json', JSON.stringify(data));
+  await fs.writeFileSync('data.json', JSON.stringify(data));
   console.log(data);
   res.send('Data saved successfully');
 });
 
-app.post('/updateData', (req, res) => {
+app.get('/updateData', (req, res) => {
   const { key, value } = req.body;
   const data = JSON.parse(fs.readFileSync('./data.json'));
   data[key] = value;

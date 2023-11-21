@@ -30,7 +30,8 @@
     "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\"",
     "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js",
     "electron:start": "wait-on tcp:3000 && electron .",
-    "s:s": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\" \"node server/fileSystem.js\""
+    "s:s": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\" \"node server/fileSystem.js\"",
+    "na:s": "concurrently -k \"cross-env BROWSER=none npm start\" \"node server/fileSystem.js\""
   },
   "eslintConfig": {
     "extends": [

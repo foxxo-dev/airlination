@@ -3,48 +3,28 @@ import '../css/main.css';
 import { useParams } from 'react-router-dom';
 import { getData } from '../script/saveGame';
 import { saveInitialData } from '../script/saveInitialData';
+import { initData } from '../constants/initData.js';
 
 const Welcome = () => {
   const { name, id } = useParams();
   const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
 
-  const [responseData, setResponseData] = useState({
-    money: 0,
-    lvl: 0,
-    planes: []
-  });
-
-  useEffect(() => {
+  const [responseData, setResponseData] = useState(null);
     getData()
       .then((res) => {
         setResponseData(res);
-        if (!responseData || responseData === undefined) {
-          saveInitialData({
-            name: name,
-            id: id,
-            lvl: 1,
-            money: 100000,
-            planes: [
-              {
-                name: 'Embrayer 190',
-                id: 'ERJ190',
-                amount: 1,
-                price: 100000,
-                speed: 0,
-                range: 15200,
-                capacity: 182,
-                fuel: 0,
-                maintenance: 1
-              }
-            ]
-          });
+        console.log(responseData);
+        if (
+          !responseData ||
+          responseData === undefined ||
+          responseData === null
+        ) {
+          saveInitialData(initData(name, id));
         }
       })
       .catch((err) => {
         alert('Application Exited With Error: ' + err);
       });
-  }, []); // Dependencies for useEffect
-
   return (
     <div>
       {name} <br /> account: {responseData.money}$ lvl {responseData.lvl} <br />
