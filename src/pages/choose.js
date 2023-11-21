@@ -12,7 +12,11 @@ const Choose = () => {
 
       console.log(JSON.stringify(preSavedData));
 
-      if (JSON.stringify(preSavedData) !== undefined) {
+      if (
+        JSON.stringify(preSavedData) !== undefined ||
+        preSavedData !== null ||
+        JSON.stringify(preSavedData) !== '{}'
+      ) {
         navigate(`/main/${preSavedData.name}/${preSavedData.id}`);
       }
     }
