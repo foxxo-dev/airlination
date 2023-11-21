@@ -16,6 +16,7 @@ app.get('/getData', (req, res) => {
   let data = {};
   if (fs.existsSync('data.json')) {
     const fileContent = fs.readFileSync('./data.json', 'utf-8');
+    console.log('GET DATA' + fileContent);
     if (fileContent.trim() !== '') {
       data = JSON.parse(fileContent);
     }
@@ -24,14 +25,15 @@ app.get('/getData', (req, res) => {
   res.json(data);
 });
 
-app.get('/saveData', async (req, res) => {
+app.post('/saveData', (req, res) => {
   const data = req.body;
-  await fs.writeFileSync('data.json', JSON.stringify(data));
+  console.log('SERVER' + data);
+  fs.writeFileSync('data.json', JSON.stringify(data));
   console.log(data);
   res.send('Data saved successfully');
 });
 
-app.get('/updateData', (req, res) => {
+app.post('/updateData', (req, res) => {
   const { key, value } = req.body;
   const data = JSON.parse(fs.readFileSync('./data.json'));
   data[key] = value;

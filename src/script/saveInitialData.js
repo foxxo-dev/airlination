@@ -1,6 +1,7 @@
 import { saveData } from './saveGame';
 export const saveInitialData = async (body) => {
   try {
+    console.log(body);
     const response = await saveData(body);
 
     // Check if the save was successful
