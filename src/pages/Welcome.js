@@ -8,48 +8,34 @@ import {
 } from '../script/serverHandleing.js';
 import { saveInitialData } from '../script/saveInitialData';
 import { initData } from '../constants/initData.js';
+import {
+  Budgeting,
+  AirCost,
+  Map,
+  Modal,
+  AircraftModal,
+  CountryModal
+} from '../components';
 
 const Welcome = () => {
   const { name, id, location } = useParams();
   const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
 
-  const [responseData, setResponseData] = useState();
-  const [unlockedAirports, setUnlockedAirports] = useState(['none']);
-
-  async function getUnlockedAirports() {
-    const worldData = await getWorldData();
-    console.log('WORLD DATA: ', worldData);
-    worldData.airports.forEach((airport, i) => {
-      if (responseData.unlockedLocations[i] === airport) {
-        setUnlockedAirports((prev) => [...prev, airport]);
-      }
-    });
-  }
-
-  useEffect(() => {
-    getUnlockedAirports();
-  }, []);
+  const [responseData, setResponseData] = useState({});
+  const [unlockedAirports, setUnlockedAirports] = useState(['ALL']);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState(
+    <AircraftModal aircraft_data={responseData.planes} />
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getData();
-        setResponseData(res);
-        console.log(
-          '%cBEFORE CHECKING RESPONSE ',
-          'color: red; font-size: 15px;'
-        );
-        console.log(res);
-        console.log('%cPLANES LIST: ', 'color: red; font-size: 15px;');
-        console.log(res?.planes);
+        console.log('BEFORE CHECKING RESPONSE: ', res);
+        console.log('PLANES LIST: ', res?.planes);
 
-        if (
-          !res ||
-          res === undefined ||
-          res === null ||
-          // Object.keys(res).length !== 0 ||
-          JSON.stringify(res) === '{}'
-        ) {
+        if (!res || JSON.stringify(res) === '{}') {
           console.log('No data saved, saving initial data');
           console.log('Initial data:', initData(name, id));
           saveInitialData(initData(name, id, location));
@@ -57,11 +43,10 @@ const Welcome = () => {
           const newData = await getData();
           setResponseData(newData);
 
-          console.log('%cRES after init', 'color: red; font-size: 15px;');
-          console.log(responseData);
-          window.location.reload();
+          console.log('RES after init: ', responseData);
         } else {
           console.log('Existing data exists, data is ' + JSON.stringify(res));
+          setResponseData(res);
         }
       } catch (err) {
         alert('Application Exited With Error: ' + err);
@@ -71,34 +56,49 @@ const Welcome = () => {
     fetchData();
   }, [name, id]);
 
+  const open_aircraft_modal = () => {
+    setOpenedModal(
+      <AircraftModal
+        planes={responseData.planes}
+        onInfoClick={handleInfoClick}
+        onBuyClick={handleBuyClick}
+      />
+    );
+    setIsModalOpen(true);
+  };
+
+  const open_country_modal = () => {
+    setOpenedModal(<CountryModal />);
+    setIsModalOpen(true);
+  };
+
+  const close_modal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleInfoClick = (plane) => {
+    console.log(`Info clicked for plane: ${plane.name}`);
+  };
+
+  const handleBuyClick = (plane) => {
+    console.log(`Buy clicked for plane: ${plane.name}`);
+  };
+
   return (
-    <div>
-      {name} <br /> account: {responseData?.money}$ lvl {responseData?.lvl}{' '}
-      <br />
-      {responseData && responseData.planes ? (
-        <div className='plane_container'>
-          {responseData.planes.map((plane, i) => (
-            <div className='plane_info_container' key={plane.id}>
-              <span className='plane_info_name'>{plane.name}</span> <br />
-              <span className='plane_info_id'>{plane.id}</span> <br />
-              <span className='plane_info_amount'>{plane.amount}</span> <br />
-              <span className='plane_info_price'>{plane.price}$</span> <br />
-              <span className='plane_info_speed'>{plane.speed}KTS</span> <br />
-              <span className='plane_info_range'>{plane.range}NM</span> <br />
-              <span className='plane_info_capacity'>
-                {plane.capacity}pax
-              </span>{' '}
-              <br />
-              <span className='plane_info_fuel'>
-                {plane.fuel ? 0 : 'no fuel'}T
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>Loading...</p>
+    <div className='container'>
+      <Budgeting
+        close_modal={close_modal}
+        open_aircraft_modal={open_aircraft_modal}
+        open_country_modal={open_country_modal}
+      />
+      <AirCost />
+      <Map
+        lvl={responseData.lvl ? responseData.lvl : 0}
+        xp={responseData.xp ? responseData.xp : 0}
+      />
+      {isModalOpen && (
+        <Modal modalContent={openedModal} close_modal={close_modal} />
       )}
-      <p>Airports to unlock: {unlockedAirports}</p>
     </div>
   );
 };

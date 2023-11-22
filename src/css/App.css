@@ -1,7 +1,9 @@
 @import 'variables.css';
+@import 'fontFaces.css';
 body {
   display: grid;
   place-items: center;
+  font-family: 'Cascadia', sans-serif;
 }
 .App {
   text-align: center;
@@ -106,3 +108,4 @@ button {
   position: absolute;
   bottom: 1rem;
 }
+
