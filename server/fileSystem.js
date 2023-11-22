@@ -34,10 +34,15 @@ app.post('/saveData', (req, res) => {
 });
 
 app.post('/updateData', (req, res) => {
+  console.log('GOT REQUEST');
   const { key, value } = req.body;
-  const data = JSON.parse(fs.readFileSync('./data.json'));
+  console.log({ key, value });
+  let data = JSON.parse(fs.readFileSync('./data.json'));
+  console.log('GOT DATA, keys current value is: ' + data[key]);
   data[key] = value;
   fs.writeFileSync('./data.json', JSON.stringify(data));
+  data = JSON.parse(fs.readFileSync('./data.json'));
+  console.log('GOT DATA, keys updated value is: ' + data[key]);
   res.send('Data updated successfully');
 });
 

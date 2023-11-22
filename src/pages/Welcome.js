@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../css/main.css';
 import { useParams } from 'react-router-dom';
-import { getData } from '../script/saveGame';
+import { getData, updateData } from '../script/saveGame';
 import { saveInitialData } from '../script/saveInitialData';
 import { initData } from '../constants/initData.js';
 
@@ -51,37 +51,50 @@ const Welcome = () => {
     fetchData();
   }, [name, id]);
 
+  function updateFuel(add, pi) {
+    // Update the fuel attribute in the responseData object
+    const updatedPlanes = [...responseData.planes];
+    updatedPlanes[pi] = {
+      ...updatedPlanes[pi],
+      fuel: updatedPlanes[pi].fuel + add
+    };
+
+    // Update the data in the file using the updateData function
+    updateData(responseData.planes[pi].fuel, updatedPlanes[pi].fuel);
+
+    // Update the state with the modified responseData
+    setResponseData({
+      ...responseData,
+      planes: updatedPlanes
+    });
+
+    console.log('Fuel updated in file');
+    console.log(responseData);
+    console.log('Finished Operation');
+  }
+
   return (
     <div>
       {name} <br /> account: {responseData?.money}$ lvl {responseData?.lvl}{' '}
       <br />
       {responseData && responseData.planes ? (
         <div className='plane_container'>
-          {responseData.planes.map((plane) => (
+          {responseData.planes.map((plane, i) => (
             <div className='plane_info_container' key={plane.id}>
-              <div className='plane_info_container' key={plane.id}>
-                <div className='plane_info_container' key={plane.id}>
-                  <span className='plane_info_name'>{plane.name}</span> <br />
-                  <span className='plane_info_id'>{plane.id}</span> <br />
-                  <span className='plane_info_amount'>{plane.amount}</span>{' '}
-                  <br />
-                  <span className='plane_info_price'>{plane.price}$</span>{' '}
-                  <br />
-                  <span className='plane_info_speed'>
-                    {plane.speed}KTS
-                  </span>{' '}
-                  <br />
-                  <span className='plane_info_range'>{plane.range}NM</span>{' '}
-                  <br />
-                  <span className='plane_info_capacity'>
-                    {plane.capacity}pax
-                  </span>{' '}
-                  <br />
-                  <span className='plane_info_fuel'>
-                    {plane.fuel ? 0 : 'no fuel'}T
-                  </span>
-                </div>
-              </div>
+              <span className='plane_info_name'>{plane.name}</span> <br />
+              <span className='plane_info_id'>{plane.id}</span> <br />
+              <span className='plane_info_amount'>{plane.amount}</span> <br />
+              <span className='plane_info_price'>{plane.price}$</span> <br />
+              <span className='plane_info_speed'>{plane.speed}KTS</span> <br />
+              <span className='plane_info_range'>{plane.range}NM</span> <br />
+              <span className='plane_info_capacity'>
+                {plane.capacity}pax
+              </span>{' '}
+              <br />
+              <span className='plane_info_fuel'>
+                {plane.fuel ? 0 : 'no fuel'}T
+              </span>
+              <button onClick={() => updateFuel(5, i)}>Buy 5t fuel</button>
             </div>
           ))}
         </div>

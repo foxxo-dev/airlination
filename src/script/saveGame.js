@@ -31,6 +31,7 @@ async function saveData(data) {
 }
 
 async function updateData(key, value) {
+  console.log({ key, value });
   return await fetch('http://localhost:3001/updateData', {
     method: 'POST',
     headers: {
