@@ -12,10 +12,29 @@ app.use(
   })
 );
 
+app.get('/', (req, res) => {
+  res.send(
+    '<span style="text-align: center;">There is nothing here. Go to <a style="color: black;"  href="http://localhost:3000">port 300</a> for app, or see the following: <br /> <a style="color: black;"  href="http://localhost:3001/getData">getData</a> <br /> <a style="color: black;"  href="http://localhost:3001/getWorldData">getWorldData</a> <br /> <a style="color: black;"  href="http://localhost:3001/saveData">saveData</a> <br /> <a style="color: black;"  href="http://localhost:3001/updateData">updateData</a></span>'
+  );
+});
+
 app.get('/getData', (req, res) => {
   let data = {};
-  if (fs.existsSync('data.json')) {
-    const fileContent = fs.readFileSync('./data.json', 'utf-8');
+  if (fs.existsSync('data.airsave')) {
+    const fileContent = fs.readFileSync('data.airsave', 'utf-8');
+    console.log('GET DATA' + fileContent);
+    if (fileContent.trim() !== '') {
+      data = JSON.parse(fileContent);
+    }
+  }
+  console.log(data);
+  res.json(data);
+});
+
+app.get('/getWorldData', (req, res) => {
+  let data = {};
+  if (fs.existsSync('world.airsaveinit')) {
+    const fileContent = fs.readFileSync('world.airsaveinit', 'utf-8');
     console.log('GET DATA' + fileContent);
     if (fileContent.trim() !== '') {
       data = JSON.parse(fileContent);
@@ -28,7 +47,7 @@ app.get('/getData', (req, res) => {
 app.post('/saveData', (req, res) => {
   const data = req.body;
   console.log('SERVER' + data);
-  fs.writeFileSync('data.json', JSON.stringify(data));
+  fs.writeFileSync('data.airsave', JSON.stringify(data));
   console.log(data);
   res.send('Data saved successfully');
 });
@@ -37,11 +56,11 @@ app.post('/updateData', (req, res) => {
   console.log('GOT REQUEST');
   const { key, value } = req.body;
   console.log({ key, value });
-  let data = JSON.parse(fs.readFileSync('./data.json'));
+  let data = JSON.parse(fs.readFileSync('./data.airsave'));
   console.log('GOT DATA, keys current value is: ' + data[key]);
   data[key] = value;
-  fs.writeFileSync('./data.json', JSON.stringify(data));
-  data = JSON.parse(fs.readFileSync('./data.json'));
+  fs.writeFileSync('./data.airsave', JSON.stringify(data));
+  data = JSON.parse(fs.readFileSync('./data.airsave'));
   console.log('GOT DATA, keys updated value is: ' + data[key]);
   res.send('Data updated successfully');
 });

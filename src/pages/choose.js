@@ -1,7 +1,7 @@
 import '../css/App.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getData } from '../script/saveGame';
+import { getData } from '../script/serverHandleing';
 
 const Choose = () => {
   const navigate = useNavigate();
@@ -19,7 +19,9 @@ const Choose = () => {
         Object.keys(preSavedData).length !== 0
       ) {
         console.log('JSON IS NOT EMPTY');
-        navigate(`/main/${preSavedData.name}/${preSavedData.id}`);
+        navigate(
+          `/main/${preSavedData.name}/${preSavedData.id}/NOTINITIALIZING`
+        );
       }
     }
     checkIfData();
@@ -28,6 +30,7 @@ const Choose = () => {
   const [isWorld, setIsWorld] = useState(true);
   const [isDomestic, setIsDomestic] = useState(false);
   const [name, setName] = useState('THEBIGWHITESHARK');
+  const [location, setLocation] = useState('EPWA');
 
   function checkedWorld() {
     setIsWorld(true);
@@ -39,7 +42,9 @@ const Choose = () => {
   }
   function finish() {
     if (!name) return alert('Please enter a name');
-    navigate(`/please-wait/${name}/${isWorld ? 'world' : 'domestic'}`);
+    navigate(
+      `/please-wait/${name}/${isWorld ? 'world' : 'domestic'}/${location}`
+    );
   }
 
   return (
@@ -71,6 +76,13 @@ const Choose = () => {
           placeholder='thebigwhiteshark'
           required
           onChange={(e) => setName(e.target.value)}
+        />
+        <label>LOCATION</label>
+        <input
+          type='text'
+          placeholder='EPWA'
+          required
+          onChange={(e) => setLocation(e.target.value)}
         />
       </form>
       <button onClick={finish}>CREATE</button>

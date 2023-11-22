@@ -12,6 +12,20 @@ async function getData() {
     });
 }
 
+async function getWorldData() {
+  return await fetch('http://localhost:3001/getWorldData')
+    .then((response) => {
+      if (!response.ok) {
+        console.log(response.json());
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error('Error during GET request:', error);
+    });
+}
+
 async function saveData(data) {
   return await fetch('http://localhost:3001/saveData', {
     method: 'POST',
@@ -49,4 +63,4 @@ async function updateData(key, value) {
     });
 }
 
-export { getData, saveData, updateData };
+export { getData, saveData, updateData, getWorldData };

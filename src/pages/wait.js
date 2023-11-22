@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 function Wait() {
-  const { name, type } = useParams();
+  const { name, type, location } = useParams();
   const rando = Math.round(Math.random() * 5 + 2);
   const [timer, setTimer] = useState(rando);
   useEffect(() => {
@@ -13,7 +13,7 @@ function Wait() {
       else {
         clearInterval(intervalId);
         const id = createId(type);
-        window.location.href = `/main/${name}/${id}`;
+        window.location.href = `/main/${name}/${id}/${location}`;
       }
     }, 1000);
 
@@ -34,7 +34,7 @@ function Wait() {
         max={7}
         style={{
           width: 500,
-          transition: 'width 1s ease-in-out',
+          transition: 'width 1s ease-in-out'
         }}
       ></progress>
       <br />

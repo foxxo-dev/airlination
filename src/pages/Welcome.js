@@ -1,15 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import '../css/main.css';
 import { useParams } from 'react-router-dom';
-import { getData, updateData } from '../script/saveGame';
+import {
+  getData,
+  getWorldData,
+  updateData
+} from '../script/serverHandleing.js';
 import { saveInitialData } from '../script/saveInitialData';
 import { initData } from '../constants/initData.js';
 
 const Welcome = () => {
-  const { name, id } = useParams();
+  const { name, id, location } = useParams();
   const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
 
-  const [responseData, setResponseData] = useState(null);
+  const [responseData, setResponseData] = useState();
+  const [unlockedAirports, setUnlockedAirports] = useState(['none']);
+
+  async function getUnlockedAirports() {
+    const worldData = await getWorldData();
+    console.log('WORLD DATA: ', worldData);
+    worldData.airports.forEach((airport, i) => {
+      if (responseData.unlockedLocations[i] === airport) {
+        setUnlockedAirports((prev) => [...prev, airport]);
+      }
+    });
+  }
+
+  useEffect(() => {
+    getUnlockedAirports();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,18 +47,19 @@ const Welcome = () => {
           !res ||
           res === undefined ||
           res === null ||
-          Object.keys(res).length !== 0 ||
+          // Object.keys(res).length !== 0 ||
           JSON.stringify(res) === '{}'
         ) {
           console.log('No data saved, saving initial data');
           console.log('Initial data:', initData(name, id));
-          saveInitialData(initData(name, id));
+          saveInitialData(initData(name, id, location));
 
           const newData = await getData();
           setResponseData(newData);
 
           console.log('%cRES after init', 'color: red; font-size: 15px;');
           console.log(responseData);
+          window.location.reload();
         } else {
           console.log('Existing data exists, data is ' + JSON.stringify(res));
         }
@@ -50,28 +70,6 @@ const Welcome = () => {
 
     fetchData();
   }, [name, id]);
-
-  function updateFuel(add, pi) {
-    // Update the fuel attribute in the responseData object
-    const updatedPlanes = [...responseData.planes];
-    updatedPlanes[pi] = {
-      ...updatedPlanes[pi],
-      fuel: updatedPlanes[pi].fuel + add
-    };
-
-    // Update the data in the file using the updateData function
-    updateData(responseData.planes[pi].fuel, updatedPlanes[pi].fuel);
-
-    // Update the state with the modified responseData
-    setResponseData({
-      ...responseData,
-      planes: updatedPlanes
-    });
-
-    console.log('Fuel updated in file');
-    console.log(responseData);
-    console.log('Finished Operation');
-  }
 
   return (
     <div>
@@ -94,13 +92,13 @@ const Welcome = () => {
               <span className='plane_info_fuel'>
                 {plane.fuel ? 0 : 'no fuel'}T
               </span>
-              <button onClick={() => updateFuel(5, i)}>Buy 5t fuel</button>
             </div>
           ))}
         </div>
       ) : (
         <p>Loading...</p>
       )}
+      <p>Airports to unlock: {unlockedAirports}</p>
     </div>
   );
 };
