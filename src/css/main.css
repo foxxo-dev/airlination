@@ -153,6 +153,11 @@ input {
   padding-inline: 50px;
 }
 
+input {
+  color: var(--primary, red) !important;
+  text-transform: uppercase;
+}
+
 /* Modal */
 
 .modal {
@@ -169,7 +174,7 @@ input {
   border-color: white;
 }
 
-.modal button,
-input {
-  color: white;
+.modal > button,
+.modal > input {
+  color: white !important;
 }

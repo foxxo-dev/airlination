@@ -53,16 +53,13 @@ app.post('/saveData', (req, res) => {
 });
 
 app.post('/updateData', (req, res) => {
-  console.log('GOT REQUEST');
-  const { key, value } = req.body;
-  console.log({ key, value });
-  let data = JSON.parse(fs.readFileSync('./data.airsave'));
-  console.log('GOT DATA, keys current value is: ' + data[key]);
-  data[key] = value;
-  fs.writeFileSync('./data.airsave', JSON.stringify(data));
-  data = JSON.parse(fs.readFileSync('./data.airsave'));
-  console.log('GOT DATA, keys updated value is: ' + data[key]);
-  res.send('Data updated successfully');
+  const { key, data } = req.body;
+  console.log('SERVER' + key, data);
+  let orig_data = fs.readFileSync('data.airsave', 'utf-8');
+  orig_data[key] = data;
+  console.log('SERVER' + orig_data);
+  fs.writeFileSync('data.airsave', JSON.stringify(orig_data));
+  res.send('Data saved successfully');
 });
 
 app.listen(port, () => {

@@ -27,6 +27,8 @@ const Welcome = () => {
   const [openedModal, setOpenedModal] = useState(
     <AircraftModal aircraft_data={responseData.planes} />
   );
+  const [xp, setXp] = useState(0);
+  const [lvl, setLvl] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +49,8 @@ const Welcome = () => {
         } else {
           console.log('Existing data exists, data is ' + JSON.stringify(res));
           setResponseData(res);
+          setXp(res.xp);
+          setLvl(res.lvl);
         }
       } catch (err) {
         alert('Application Exited With Error: ' + err);
@@ -91,11 +95,8 @@ const Welcome = () => {
         open_aircraft_modal={open_aircraft_modal}
         open_country_modal={open_country_modal}
       />
-      <AirCost />
-      <Map
-        lvl={responseData.lvl ? responseData.lvl : 0}
-        xp={responseData.xp ? responseData.xp : 0}
-      />
+      <AirCost setXp={setXp} />
+      <Map lvl={lvl ? lvl : 0} xp={xp ? xp : 0} />
       {isModalOpen && (
         <Modal modalContent={openedModal} close_modal={close_modal} />
       )}
