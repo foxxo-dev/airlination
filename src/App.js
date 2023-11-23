@@ -1,5 +1,5 @@
 import './css/App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Choose from './pages/choose';
 import Wait from './pages/wait';
 import Welcome from './pages/Welcome';

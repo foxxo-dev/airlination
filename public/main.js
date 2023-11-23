@@ -25,8 +25,6 @@ function createWindow() {
   const iconPath = path.join(__dirname, 'ico.png');
   mainWindow.setIcon(iconPath);
   // exec(`wmctrl -r "Airlination" -b add,above`);
-  if (isDev) exec(`node ${path.join(__dirname, '../server/fileSystem.js')}`);
-  else exec(`node ${path.join(__dirname, '../build/server/fileSystem.js')}`);
 }
 
 app.on('window-all-closed', () => {
@@ -34,10 +32,14 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
+  if (isDev) exec(`node ${path.join(__dirname, './server/fileSystem.js')}`);
+  else exec(`node ${path.join(__dirname, '../build/server/fileSystem.js')}`);
   if (!mainWindow) createWindow(); // Create window only if it doesn't exist
 });
 
 app.on('ready', () => {
+  if (isDev) exec(`node ${path.join(__dirname, './server/fileSystem.js')}`);
+  else exec(`node ${path.join(__dirname, '../build/server/fileSystem.js')}`);
   createWindow();
   if (process.platform === 'darwin') {
     const image = nativeImage.createFromPath(path.join(__dirname, 'ico.png'));

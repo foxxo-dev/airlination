@@ -1,9 +1,10 @@
 import { createId } from '../script/createId';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Wait() {
+  const navigate = useNavigate();
   const { name, type, location } = useParams();
   const rando = Math.round(Math.random() * 5 + 2);
   const [timer, setTimer] = useState(rando);
@@ -13,7 +14,7 @@ function Wait() {
       else {
         clearInterval(intervalId);
         const id = createId(type);
-        window.location.href = `/main/${name}/${id}/${location}`;
+        navigate(`/main/${name}/${id}/${location}`);
       }
     }, 1000);
 
