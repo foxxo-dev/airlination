@@ -1,20 +1,32 @@
 const { app, BrowserWindow, Menu, nativeImage } = require('electron');
 const path = require('path');
+const isDev = require('electron-is-dev');
+const { exec } = require('child_process');
 
 require('@electron/remote/main').initialize();
 
+let mainWindow; // Declare a variable to hold the main window instance
+
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1800,
     height: 1600,
-    webPreferences: { nodeIntegration: true, enableRemoteModule: true }
+    webPreferences: { nodeIntegration: true, enableRemoteModule: true },
+    icon: path.join(__dirname, 'ico.png')
   });
 
-  win.loadURL('http://localhost:3000/');
+  mainWindow.loadURL(
+    isDev
+      ? 'http://localhost:3000/'
+      : `file://${path.join(__dirname, '../build/index.html')}`
+  );
 
   // Set taskbar icon (for Windows and Linux)
   const iconPath = path.join(__dirname, 'ico.png');
-  win.setIcon(iconPath);
+  mainWindow.setIcon(iconPath);
+  // exec(`wmctrl -r "Airlination" -b add,above`);
+  if (isDev) exec(`node ${path.join(__dirname, '../server/fileSystem.js')}`);
+  else exec(`node ${path.join(__dirname, '../build/server/fileSystem.js')}`);
 }
 
 app.on('window-all-closed', () => {
@@ -22,7 +34,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  if (!mainWindow) createWindow(); // Create window only if it doesn't exist
 });
 
 app.on('ready', () => {
@@ -33,5 +45,3 @@ app.on('ready', () => {
     app.setName('Airlination');
   }
 });
-
-// Set dock name
