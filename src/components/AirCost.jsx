@@ -38,12 +38,7 @@ const AirCost = ({ setXp }) => {
           Unlock Airport
         </button>
       </div>
-      <p style={{ maxWidth: '50pc' }}>
-        Unlocked airports:{' '}
-        {airports.map((airport) => (
-          <>{airport}, </>
-        ))}
-      </p>
+      <button>See Airports</button>
     </div>
   );
 };
