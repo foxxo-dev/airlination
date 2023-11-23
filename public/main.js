@@ -27,9 +27,11 @@ app.on('activate', () => {
 
 app.on('ready', () => {
   createWindow();
+  if (process.platform === 'darwin') {
+    const image = nativeImage.createFromPath(path.join(__dirname, 'ico.png'));
+    app.dock.setIcon(image);
+    app.setName('Airlination');
+  }
 });
 
 // Set dock name
-const image = nativeImage.createFromPath(path.join(__dirname, 'ico.png'));
-app.dock.setIcon(image);
-app.setName('Airlination');
