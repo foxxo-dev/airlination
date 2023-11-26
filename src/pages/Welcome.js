@@ -16,13 +16,14 @@ import {
   AircraftModal,
   CountryModal
 } from '../components';
+import AirportsModal from '../components/modalTypes/AirportsModal.jsx';
 
 const Welcome = () => {
   const { name, id, location } = useParams();
   const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
 
   const [responseData, setResponseData] = useState({});
-  const [unlockedAirports, setUnlockedAirports] = useState(['ALL']);
+  const [worldData, setWorldData] = useState({ airports: [''] });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(
     <AircraftModal aircraft_data={responseData.planes} />
@@ -57,6 +58,16 @@ const Welcome = () => {
       }
     };
 
+    const fetchWorldData = async () => {
+      try {
+        const res = await getWorldData();
+        setWorldData(res);
+        console.log('World Data: ', res);
+      } catch (err) {
+        alert('Application Exited With Error: ' + err);
+      }
+    };
+    fetchWorldData();
     fetchData();
   }, [name, id]);
 
@@ -71,8 +82,10 @@ const Welcome = () => {
     setIsModalOpen(true);
   };
 
-  const open_country_modal = () => {
-    setOpenedModal(<CountryModal />);
+  const open_airports_modal = () => {
+    setOpenedModal(
+      <AirportsModal userData={responseData} worldData={worldData.airports} />
+    );
     setIsModalOpen(true);
   };
 
@@ -93,9 +106,8 @@ const Welcome = () => {
       <Budgeting
         close_modal={close_modal}
         open_aircraft_modal={open_aircraft_modal}
-        open_country_modal={open_country_modal}
       />
-      <AirCost setXp={setXp} />
+      <AirCost setXp={setXp} airportModal={open_airports_modal} />
       <Map lvl={lvl ? lvl : 0} xp={xp ? xp : 0} />
       {isModalOpen && (
         <Modal modalContent={openedModal} close_modal={close_modal} />

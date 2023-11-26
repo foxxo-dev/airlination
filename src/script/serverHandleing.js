@@ -63,4 +63,23 @@ async function updateData(key, value) {
     });
 }
 
-export { getData, saveData, updateData, getWorldData };
+async function addData(key, value) {
+  console.log({ key, value });
+  return await fetch('http://localhost:3001/addData', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ key, value })
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .catch((error) => {
+      console.error('Error during POST request:', error);
+    });
+}
+
+export { getData, saveData, updateData, getWorldData, addData };

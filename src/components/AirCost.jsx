@@ -4,7 +4,7 @@ import { getData, getWorldData } from '../script/serverHandleing';
 
 var airports = [];
 
-const AirCost = ({ setXp }) => {
+const AirCost = ({ setXp, airportModal }) => {
   const [airportIcao, setAirportIcao] = useState('');
 
   async function getUnlockedAirports() {
@@ -22,7 +22,7 @@ const AirCost = ({ setXp }) => {
   }, []);
 
   return (
-    <div className='buttons_container  airport_container'>
+    <div className='buttons_container airport_container vertical_flex'>
       <span className='window_name'>//airport costs</span>
 
       <div>
@@ -38,7 +38,9 @@ const AirCost = ({ setXp }) => {
           Unlock Airport
         </button>
       </div>
-      <button>See Airports</button>
+      <button onClick={airportModal} style={{ maxWidth: 655 }}>
+        See All Airports
+      </button>
     </div>
   );
 };

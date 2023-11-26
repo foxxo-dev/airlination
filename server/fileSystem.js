@@ -1,6 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors'); // Import the cors middleware
+const bodyParser = require('body-parser');
 const app = express();
 const port = 3001; // Change the port as needed
 
@@ -11,6 +12,7 @@ app.use(
     optionsSuccessStatus: 200
   })
 );
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.send(
@@ -54,11 +56,54 @@ app.post('/saveData', (req, res) => {
 
 app.post('/updateData', (req, res) => {
   const { key, data } = req.body;
-  console.log('SERVER' + key, data);
-  let orig_data = fs.readFileSync('data.airsave', 'utf-8');
+  console.log('SERVER', key, data);
+
+  // Check the contents of the original data
+  let orig_data = JSON.parse(fs.readFileSync('data.airsave', 'utf-8'));
+  console.log('SERVER - Original Data:', orig_data);
+
+  // Check if the key exists in the original data
+  if (!orig_data.hasOwnProperty(key)) {
+    orig_data[key] = {}; // Initialize key if it doesn't exist
+  }
+
+  // Update the data and log the result
   orig_data[key] = data;
-  console.log('SERVER' + orig_data);
+  console.log('SERVER - Updated Data:', orig_data);
+
+  // Write the updated data back to the file
   fs.writeFileSync('data.airsave', JSON.stringify(orig_data));
+
+  res.send('Data saved successfully');
+});
+
+app.post('/addData', (req, res) => {
+  const { key, value } = req.body;
+  console.log('SERVER', key, value);
+
+  // Read the contents of the original data
+  let orig_data = {};
+  if (fs.existsSync('data.airsave')) {
+    const fileContent = fs.readFileSync('data.airsave', 'utf-8');
+    console.log('SERVER - Original Data:', fileContent);
+    if (fileContent.trim() !== '') {
+      orig_data = JSON.parse(fileContent);
+    }
+  }
+
+  // Ensure that the key is an array in the original data
+  orig_data[key] = orig_data[key] || [];
+
+  console.log(value);
+
+  // Push the new data to the array
+  orig_data[key].push(value);
+
+  console.log('SERVER - Updated Data:', orig_data);
+
+  // Write the updated data back to the file
+  fs.writeFileSync('data.airsave', JSON.stringify(orig_data));
+
   res.send('Data saved successfully');
 });
 

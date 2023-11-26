@@ -172,9 +172,5 @@ input {
 
 .modal * {
   border-color: white;
-}
-
-.modal > button,
-.modal > input {
-  color: white !important;
+  color: white;
 }
