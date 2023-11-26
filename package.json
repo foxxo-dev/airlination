@@ -1,6 +1,8 @@
 {
   "name": "airlination",
-  "version": "1.0.3",
+  "version": "0.0.4",
+  "description": "Airlination is a desktop app that allows you to manage an airline. It is easy to use and has iniquite gameplay.",
+  "author": "Foxxo",
   "private": true,
   "dependencies": {
     "@electron/remote": "^2.1.0",
