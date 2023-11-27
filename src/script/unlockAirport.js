@@ -28,6 +28,7 @@ async function unlockAirport(airport, sxp, reset) {
         await addData('unlockedLocation', current_airport);
         reset('');
         console.log('Updated Airport Data!');
+        window.location.reload();
       }
     }
     return;

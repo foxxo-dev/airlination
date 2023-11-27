@@ -47,6 +47,8 @@ const Welcome = () => {
           setResponseData(newData);
 
           console.log('RES after init: ', responseData);
+
+          window.location.reload();
         } else {
           console.log('Existing data exists, data is ' + JSON.stringify(res));
           setResponseData(res);
