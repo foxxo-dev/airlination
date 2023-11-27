@@ -22,7 +22,7 @@ const AirCost = ({ setXp, airportModal }) => {
   }, []);
 
   return (
-    <div className='buttons_container airport_container vertical_flex'>
+    <div className='buttons_container  airport_container vertical_flex'>
       <span className='window_name'>//airport costs</span>
 
       <div>
