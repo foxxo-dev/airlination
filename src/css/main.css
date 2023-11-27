@@ -163,14 +163,19 @@ input {
 .modal {
   display: flex;
   flex-direction: column;
-  background: var(--primary, red);
-  color: white;
+  background: var(--bg, black);
+  color: var(--primary, red);
   padding: 20px;
   border-radius: 10px;
   gap: 20px;
+  border: 5px solid white;
 }
 
 .modal * {
-  border-color: white;
-  color: white;
+  border-color: var(--primary, red);
+  color: var(--primary, red);
 }
+
+/* .modal button {
+  color: white;
+} */

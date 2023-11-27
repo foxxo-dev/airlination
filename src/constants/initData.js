@@ -21,7 +21,7 @@ export function initData(name, id, location) {
         nextFlightDestination: null
       }
     ],
-    unlockedLocations: [location]
+    unlockedLocation: [location]
   };
   return initData;
 }

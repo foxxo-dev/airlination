@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Modal = ({ modalContent, close_modal }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({
+    x: (window.innerWidth - modalContent.props.width) / 2,
+    y: (window.innerHeight - modalContent.props.height) / 2
+  });
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    setPosition({
+      x: (window.innerWidth - modalContent.props.width) / 2,
+      y: (window.innerHeight - modalContent.props.height) / 2
+    });
+  }, []);
 
   const handleMouseDown = (e) => {
     if (e.target.classList.contains('top-bar')) {
       setIsDragging(true);
       setPosition({
         x: e.clientX - position.x,
-        y: e.clientY - position.y,
+        y: e.clientY - position.y
       });
       document.body.style.userSelect = 'none';
     }
@@ -39,12 +49,15 @@ const Modal = ({ modalContent, close_modal }) => {
         top: position.y,
         left: position.x
       }}
-      className="modal"
+      className='modal'
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      <div className="top-bar" style={{ cursor: isDragging ? 'grabbing' : 'grab', }}>
+      <div
+        className='top-bar'
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+      >
         <button onClick={close_modal}>Close Modal</button>
       </div>
       {modalContent}
