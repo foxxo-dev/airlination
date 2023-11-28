@@ -7,6 +7,8 @@ require('@electron/remote/main').initialize();
 
 let mainWindow;
 
+console.log(isDev);
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1800,
