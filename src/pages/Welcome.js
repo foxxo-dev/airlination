@@ -85,10 +85,14 @@ const Welcome = () => {
   };
 
   const open_airports_modal = () => {
-    setOpenedModal(
-      <AirportsModal userData={responseData} worldData={worldData.airports} />
-    );
-    setIsModalOpen(true);
+    if (worldData && worldData.airports) {
+      setOpenedModal(
+        <AirportsModal userData={responseData} worldData={worldData.airports} />
+      );
+      setIsModalOpen(true);
+    } else {
+      console.error('worldData or worldData.airports is undefined');
+    }
   };
 
   const close_modal = () => {
