@@ -1,7 +1,7 @@
 import '../css/App.css';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getData } from '../script/serverHandleing';
+import { getData, getWorldData } from '../script/serverHandleing';
 
 const Choose = () => {
   const navigate = useNavigate();
@@ -24,24 +24,36 @@ const Choose = () => {
         );
       }
     }
+
+    async function getWorldData_in() {
+      const world = JSON.parse(await getWorldData());
+      setWorldAirports(world.airports);
+      console.log('World Data: ', world.airports);
+    }
+
     checkIfData();
-  }, []);
+    getWorldData_in();
+  }, [navigate]);
 
   const [isWorld, setIsWorld] = useState(true);
   const [isDomestic, setIsDomestic] = useState(false);
+  const [worldAirports, setWorldAirports] = useState(['--PLEASE WAIT--']);
   const [name, setName] = useState('THEBIGWHITESHARK');
-  const [location, setLocation] = useState('EPWA');
+  const [location, setLocation] = useState('');
 
   function checkedWorld() {
     setIsWorld(true);
     setIsDomestic(false);
   }
+
   function checkedDomestic() {
     setIsWorld(false);
     setIsDomestic(true);
   }
+
   function finish() {
-    if (!name) return alert('Please enter a name');
+    if (!name || !location)
+      return alert('Please enter a name and choose a location');
     navigate(
       `/please-wait/${name}/${isWorld ? 'world' : 'domestic'}/${location}`
     );
@@ -78,13 +90,16 @@ const Choose = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <label>LOCATION</label>
-        <input
-          type='text'
-          placeholder='EPWA'
-          value={location}
-          required
-          onChange={(e) => setLocation(e.target.value)}
-        />
+        <select value={location} onChange={(e) => setLocation(e.target.value)}>
+          <option value='' disabled>
+            --PLEASE CHOOSE--
+          </option>
+          {worldAirports.map((airport, index) => (
+            <option key={index} value={airport}>
+              {airport}
+            </option>
+          ))}
+        </select>
       </form>
       <button onClick={finish}>CREATE</button>
     </div>

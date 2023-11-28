@@ -5,7 +5,8 @@ async function unlockAirport(airport, sxp, reset) {
   console.log(data);
   let unlocked_airports = await data.unlockedLocation;
   if (!unlocked_airports) unlocked_airports = [];
-  const worldData = await getWorldData();
+  const _worldData = await getWorldData();
+  const worldData = JSON.parse(_worldData);
   const all_airports = worldData.airports;
 
   console.log('All airports: ', all_airports);

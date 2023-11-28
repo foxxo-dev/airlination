@@ -22,6 +22,8 @@ function Wait() {
     return () => clearInterval(intervalId);
   }, [timer]); // Add 'timer' as a dependency to useEffect
 
+  console.log('Name: ', name, ' Type: ', type, ' Location: ', location);
+
   return (
     <div>
       <h1 style={{ color: 'white', fontSize: 60 }}>

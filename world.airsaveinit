@@ -1,12 +1,1 @@
-{
-  "airports": [
-    "EPWA",
-    "EPKK",
-    "EPKT",
-    "EDDM",
-    "EDDF",
-    "LSZH",
-    "EGLL",
-    "EGKK"
-  ]
-}
+{"airports":["EPWA","EPKK","EPKT","EDDM","EDDF","LSZH","EGLL","EGKK"]}

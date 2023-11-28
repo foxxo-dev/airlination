@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs').promises; // Use fs.promises for async file operations
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -14,22 +14,38 @@ app.use(
 );
 app.use(bodyParser.json());
 
-function saveData(filename, data) {
-  const jsonData = JSON.stringify(data);
-  const base64Data = Buffer.from(jsonData).toString('base64');
-  fs.writeFileSync(filename, base64Data);
+async function saveData(filename, data) {
+  try {
+    const jsonData = JSON.stringify(data);
+    const base64Data = Buffer.from(jsonData).toString('base64');
+    await fs.writeFile(filename, base64Data);
+  } catch (error) {
+    console.error(`Error saving data to ${filename}: ${error.message}`);
+  }
 }
 
-function readData(filename) {
-  if (fs.existsSync(filename)) {
-    const base64Data = fs.readFileSync(filename, 'utf-8');
+async function readData(filename) {
+  try {
+    // Log the file path
+    console.log(`Attempting to read data from ${filename}`);
+
+    await fs.stat(filename); // Check if the file exists
+
+    const base64Data = await fs.readFile(filename, 'utf-8');
     const jsonData = Buffer.from(base64Data, 'base64').toString('utf-8');
-    console.log('----------------- \n \n');
-    console.log(JSON.parse(jsonData)); // Unexpected token this dosent work
-    console.log('----------------- \n \n');
+
+    // Log the file content
+    console.log(`Content of ${filename}:`, jsonData);
+
     return JSON.parse(jsonData);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.error(`File ${filename} not found.`);
+    } else {
+      console.error(`Error reading data from ${filename}: ${error.message}`);
+    }
+    return {}; // or handle the absence of the file appropriately
   }
-  return {};
 }
 
 app.get('/', (req, res) => {
@@ -38,53 +54,67 @@ app.get('/', (req, res) => {
   );
 });
 
-app.get('/getData', (req, res) => {
-  const data = readData('data.airsave');
-  console.log(data);
-  res.json(data);
+app.get('/getData', async (req, res) => {
+  try {
+    const data = await readData('data.airsave');
+    console.log('Data: ', data);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-app.get('/getWorldData', (req, res) => {
-  const data = readData('world.airsaveinit');
-  console.log(data);
-  res.json(data);
+app.get('/getWorldData', async (req, res) => {
+  try {
+    const data = await fs.readFile('world.airsaveinit', 'utf-8');
+    console.log('World Data: ', data);
+    if (JSON.stringify(data) === '{}') {
+      return;
+    }
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/saveData', (req, res) => {
   const data = req.body;
-  console.log('SERVER', data);
   saveData('data.airsave', data);
   res.send('Data saved successfully');
 });
 
-app.post('/updateData', (req, res) => {
+app.post('/updateData', async (req, res) => {
   const { key, data } = req.body;
-  console.log('SERVER', key, data);
+  try {
+    let orig_data = await readData('data.airsave');
 
-  let orig_data = readData('data.airsave');
+    if (!orig_data.hasOwnProperty(key)) {
+      orig_data[key] = {};
+    }
 
-  if (!orig_data.hasOwnProperty(key)) {
-    orig_data[key] = {};
+    orig_data[key] = data;
+
+    await saveData('data.airsave', orig_data);
+
+    res.send('Data saved successfully');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
   }
-
-  orig_data[key] = data;
-
-  saveData('data.airsave', orig_data);
-
-  res.send('Data saved successfully');
 });
 
-app.post('/addData', (req, res) => {
+app.post('/addData', async (req, res) => {
   const { key, value } = req.body;
-  console.log('SERVER', key, value);
+  try {
+    let orig_data = await readData('data.airsave');
+    orig_data[key] = orig_data[key] || [];
+    orig_data[key].push(value);
 
-  let orig_data = readData('data.airsave');
-  orig_data[key] = orig_data[key] || [];
-  orig_data[key].push(value);
+    await saveData('data.airsave', orig_data);
 
-  saveData('data.airsave', orig_data);
-
-  res.send('Data saved successfully');
+    res.send('Data saved successfully');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.listen(port, () => {

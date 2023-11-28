@@ -5,7 +5,14 @@ const AircraftModal = ({ planes, onInfoClick, onBuyClick }) => {
   console.log('Planes: ', planes);
   return (
     <>
-      <div>
+      <div
+        style={{
+          width: 600,
+          gap: 10,
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         {planes.map((plane) => (
           // todo planeoptions instead of planebuyoption here
           <PlaneBuyOption

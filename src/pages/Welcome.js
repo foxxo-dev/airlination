@@ -46,9 +46,10 @@ const Welcome = () => {
           const newData = await getData();
           setResponseData(newData);
 
-          console.log('RES after init: ', responseData);
+          console.log('RES after init: ', newData); // Use newData instead of responseData
 
-          window.location.reload();
+          // Do not reload the entire page
+          // window.location.reload();
         } else {
           console.log('Existing data exists, data is ' + JSON.stringify(res));
           setResponseData(res);
@@ -63,17 +64,22 @@ const Welcome = () => {
     const fetchWorldData = async () => {
       try {
         const res = await getWorldData();
-        setWorldData(res);
+        setWorldData(JSON.parse(res));
         console.log('World Data: ', res);
       } catch (err) {
         alert('Application Exited With Error: ' + err);
       }
     };
+
+    // Avoid calling window.location.reload() here
+
     fetchWorldData();
     fetchData();
-  }, [name, id]);
+  }, [name, id, location]); // Add location to dependencies if needed
 
   const open_aircraft_modal = () => {
+    console.log(responseData, ' RESPONSE DATA');
+    console.log(responseData.planes, ' PLANES IN RESPONSE DATA');
     setOpenedModal(
       <AircraftModal
         planes={responseData.planes}
@@ -91,6 +97,8 @@ const Welcome = () => {
       );
       setIsModalOpen(true);
     } else {
+      console.log('World Data:', worldData);
+      console.log("World Data's Airports:", worldData?.airports);
       console.error('worldData or worldData.airports is undefined');
     }
   };
