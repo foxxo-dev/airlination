@@ -49,7 +49,7 @@ const Choose = () => {
 
   return (
     <div className='App'>
-      <h1>AIRLINNERTION</h1>
+      <h1>AIRLINATION</h1>
       <form>
         <div id='checkbox_container'>
           <div className='checkbox_label_container'>
