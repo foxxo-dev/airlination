@@ -81,6 +81,7 @@ const Choose = () => {
         <input
           type='text'
           placeholder='EPWA'
+          value={location}
           required
           onChange={(e) => setLocation(e.target.value)}
         />
