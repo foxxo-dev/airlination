@@ -3,6 +3,7 @@
 body {
   color: var(--primary, red);
   font-size: 50px;
+  overflow: hidden;
 }
 .plane_info_container {
   min-width: 600px;
