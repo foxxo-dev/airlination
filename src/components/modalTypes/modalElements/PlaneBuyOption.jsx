@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { getData, saveData, updateData } from '../../../script/serverHandleing';
 import PlaneInfo from '../PlaneInfo';
 
-const PlaneBuyOption = ({ plane, iteration, set_opened_modal }) => {
+const PlaneBuyOption = ({
+  plane,
+  iteration,
+  set_opened_modal,
+  isPlaneUsed
+}) => {
   const [airports, setAirports] = useState([]);
   const [planeDestination, setPlaneDestination] = useState('');
 
@@ -33,7 +38,7 @@ const PlaneBuyOption = ({ plane, iteration, set_opened_modal }) => {
 
       // Assuming `iteration` is defined somewhere in your code
       currentData.planes[iteration].nextFlightDestination = planeDestination;
-      currentData.planes[iteration].nextFlightTime = 'IN PROGRESS (todo)';
+      currentData.planes[iteration].nextFlightTime = 120;
 
       console.log('Data After: ', currentData);
 
@@ -58,26 +63,30 @@ const PlaneBuyOption = ({ plane, iteration, set_opened_modal }) => {
       <span>{plane.name}</span>
       <button onClick={() => onInfoClick(plane)}>Info</button>
       <div className='flex' style={{ width: 600 }}>
-        <select
-          style={{ width: 250 }}
-          value={planeDestination}
-          onChange={(e) => setPlaneDestination(e.target.value)}
-        >
-          <option value='' selected disabled style={{ opacity: 0.5 }}>
-            --SELECT--
-          </option>
-          {airports.map((airport, index) => {
-            if (plane.location === airport) return <></>;
-            return (
-              <option key={index} value={airport}>
-                {airport}
+        {!isPlaneUsed && (
+          <>
+            <select
+              style={{ width: 250 }}
+              value={planeDestination}
+              onChange={(e) => setPlaneDestination(e.target.value)}
+            >
+              <option value='' selected disabled style={{ opacity: 0.5 }}>
+                --SELECT--
               </option>
-            );
-          })}
-        </select>
-        <button onClick={setDestination} style={{ width: 270 }}>
-          Set Destination
-        </button>
+              {airports.map((airport, index) => {
+                if (plane.location === airport) return <></>;
+                return (
+                  <option key={index} value={airport}>
+                    {airport}
+                  </option>
+                );
+              })}
+            </select>
+            <button onClick={setDestination} style={{ width: 270 }}>
+              Set Destination
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

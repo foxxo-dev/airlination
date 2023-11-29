@@ -8,6 +8,12 @@ const AircraftModal = ({
   set_opened_modal
 }) => {
   console.log('Planes: ', planes);
+
+  function checkIfPLaneUsed(plane) {
+    if (plane.nextFlightDestination === '') return false;
+    return true;
+  }
+
   return (
     <>
       <div
@@ -27,6 +33,7 @@ const AircraftModal = ({
             onBuyClick={onBuyClick}
             set_opened_modal={set_opened_modal}
             iteration={i}
+            isPlaneUsed={() => checkIfPLaneUsed(plane)}
           />
         ))}
       </div>
