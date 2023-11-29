@@ -17,15 +17,16 @@ async function unlockAirport(airport, sxp, reset) {
     console.log(airport);
 
     if (current_airport === airport) {
-      if (data.xp - 5 < 0) {
+      if (data.xp - 25 < 0) {
         console.log('Not enough xp');
         alert('Not enough xp');
         return;
       } else {
         console.log("Current airport is airport, let's unlock it!");
         console.log(unlocked_airports);
-        await updateData('xp', data.xp - 5);
-        sxp(data.xp - 5);
+        const data_xp = data.xp - 25;
+        await updateData('xp', data_xp);
+        sxp(data.xp - 25);
         await addData('unlockedLocation', current_airport);
         reset('');
         console.log('Updated Airport Data!');

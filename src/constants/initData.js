@@ -4,7 +4,7 @@ export function initData(name, id, location) {
     id: id,
     lvl: 1,
     money: 100000,
-    xp: 5,
+    xp: 25,
     planes: [
       {
         name: 'Embraer 190',

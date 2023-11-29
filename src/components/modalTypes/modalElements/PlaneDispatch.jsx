@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getData, saveData, updateData } from '../../../script/serverHandleing';
+import { getData, saveData, updateData } from '../../../script/serverHandleing'; // Fix typo in import
 import PlaneInfo from '../PlaneInfo';
 import displayTimeFormat from '../../../script/planeDispatchScripts';
+import { updateLocation } from '../../../script/updateLocation';
 
 const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
   const [airports, setAirports] = useState([]);
@@ -38,19 +39,29 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
           setRemainingTime(null);
         }
 
-        if (remainingTime <= 0) {
+        if (
+          remainingTime === '0s' ||
+          remainingTime === 0 ||
+          remainingTime === '1s'
+        ) {
+          console.log('MODAL -- ARRIVED');
+          console.log(plane.nextFlightDestination);
+          console.log(plane.location);
+          updateLocation(plane.nextFlightDestination, iteration);
+          console.log(plane.location);
           clearInterval(timer);
           addXp(15);
           setRemainingTime(null);
-          //   getData().then((data) => {
-          // const currentData = data;
-          // currentData.planes[iteration].nextFlightDestination = null;
-          // currentData.planes[iteration].nextFlightTime = null;
-
-          // saveData(currentData).then(() => {
-          // Perform any additional actions after saving data
-          // });
+          // window.location.reload();
+          // Additional logic to reset nextFlightDestination and nextFlightTime in the data
+          // getData().then((data) => {
+          //   const currentData = data;
+          //   currentData.planes[iteration].nextFlightDestination = null;
+          //   currentData.planes[iteration].nextFlightTime = null;
+          //   saveData(currentData).then(() => {
+          //     // Perform any additional actions after saving data
           //   });
+          // });
         }
       };
 
@@ -160,7 +171,17 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
           <>
             <hr />
             <span>
-              {remainingTime === 0 ? 'Ready to dispatch' : remainingTime}
+              {remainingTime === 0 ? (
+                'Ready to dispatch'
+              ) : (
+                <>
+                  <span>
+                    Aircraft is Enroute to {plane.nextFlightDestination}
+                  </span>
+                  <br />
+                  <strong>{remainingTime}</strong>
+                </>
+              )}
             </span>
             <hr />
           </>
