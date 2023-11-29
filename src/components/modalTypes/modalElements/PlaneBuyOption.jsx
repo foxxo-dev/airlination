@@ -63,7 +63,7 @@ const PlaneBuyOption = ({
       <span>{plane.name}</span>
       <button onClick={() => onInfoClick(plane)}>Info</button>
       <div className='flex' style={{ width: 600 }}>
-        {!isPlaneUsed && (
+        {plane.nextFlightDestination == null ? (
           <>
             <select
               style={{ width: 250 }}
@@ -85,6 +85,12 @@ const PlaneBuyOption = ({
             <button onClick={setDestination} style={{ width: 270 }}>
               Set Destination
             </button>
+          </>
+        ) : (
+          <>
+            <hr />
+            <span>Plane is currently enroute.</span>
+            <hr />
           </>
         )}
       </div>

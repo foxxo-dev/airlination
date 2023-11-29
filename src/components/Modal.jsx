@@ -6,6 +6,7 @@ const Modal = ({ modalContent, close_modal, width = 400, height = 600 }) => {
     y: (window.innerHeight - height) / 2
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setPosition({
@@ -15,27 +16,24 @@ const Modal = ({ modalContent, close_modal, width = 400, height = 600 }) => {
   }, [width, height]);
 
   const handleMouseDown = (e) => {
-    if (e.target.classList.contains('top-bar')) {
-      setIsDragging(true);
-      setPosition({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y 
-      });
-      document.body.style.userSelect = 'none';
-    }
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+    document.body.style.userSelect = 'none';
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      setPosition((prevPosition) => {
-        const x = e.clientX - prevPosition.x;
-        const y = e.clientY - prevPosition.y;
+      let x = e.clientX - dragOffset.x;
+      let y = e.clientY - dragOffset.y;
 
-        const newX = Math.max(0, Math.min(x, window.innerWidth - width));
-        const newY = Math.max(0, Math.min(y, window.innerHeight - height));
+      // Adjust position to stick to the edges
+      x = Math.min(Math.max(x, 0), window.innerWidth - width);
+      y = Math.min(Math.max(y, 0), window.innerHeight - height);
 
-        return { x: newX, y: newY };
-      });
+      setPosition({ x, y });
     }
   };
 
@@ -49,7 +47,8 @@ const Modal = ({ modalContent, close_modal, width = 400, height = 600 }) => {
       style={{
         position: 'fixed',
         top: position.y,
-        left: position.x
+        left: position.x,
+        cursor: isDragging ? 'grabbing' : 'grab'
       }}
       className='modal'
       onMouseDown={handleMouseDown}
@@ -59,7 +58,6 @@ const Modal = ({ modalContent, close_modal, width = 400, height = 600 }) => {
       <div
         className='top-bar'
         style={{
-          cursor: isDragging ? 'grabbing' : 'grab',
           height: 50,
           outline: '5px 0 0 0 solid #212225',
           outlineOffset: -25
