@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getData } from '../../../script/serverHandleing';
+import { getData, saveData, updateData } from '../../../script/serverHandleing';
+import PlaneInfo from '../PlaneInfo';
 
-const PlaneBuyOption = ({ plane, onInfoClick, onBuyClick }) => {
+const PlaneBuyOption = ({ plane, iteration, set_opened_modal }) => {
   const [airports, setAirports] = useState([]);
+  const [planeDestination, setPlaneDestination] = useState('');
 
   useEffect(() => {
     const fetchAirports = async () => {
@@ -18,6 +20,31 @@ const PlaneBuyOption = ({ plane, onInfoClick, onBuyClick }) => {
     fetchAirports();
   }, []); // Empty dependency array ensures that the effect runs once when the component mounts
 
+  function onInfoClick(plane) {
+    set_opened_modal(<PlaneInfo plane={plane} />);
+  }
+
+  async function setDestination() {
+    if (planeDestination === '' || planeDestination == null) return;
+
+    try {
+      const currentData = await getData();
+      console.log('data before: ', currentData);
+
+      // Assuming `iteration` is defined somewhere in your code
+      currentData.planes[iteration].nextFlightDestination = planeDestination;
+      currentData.planes[iteration].nextFlightTime = 'IN PROGRESS (todo)';
+
+      console.log('Data After: ', currentData);
+
+      await saveData(currentData);
+      setPlaneDestination('');
+      console.log('Finished Operation');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return (
     <div
       className='plane-buy-option'
@@ -31,8 +58,12 @@ const PlaneBuyOption = ({ plane, onInfoClick, onBuyClick }) => {
       <span>{plane.name}</span>
       <button onClick={() => onInfoClick(plane)}>Info</button>
       <div className='flex' style={{ width: 600 }}>
-        <select style={{ width: 250 }}>
-          <option value='' selected disabled>
+        <select
+          style={{ width: 250 }}
+          value={planeDestination}
+          onChange={(e) => setPlaneDestination(e.target.value)}
+        >
+          <option value='' selected disabled style={{ opacity: 0.5 }}>
             --SELECT--
           </option>
           {airports.map((airport, index) => {
@@ -44,7 +75,7 @@ const PlaneBuyOption = ({ plane, onInfoClick, onBuyClick }) => {
             );
           })}
         </select>
-        <button onClick={() => onBuyClick(plane)} style={{ width: 270 }}>
+        <button onClick={setDestination} style={{ width: 270 }}>
           Set Destination
         </button>
       </div>

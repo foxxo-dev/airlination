@@ -1,7 +1,12 @@
 import React from 'react';
 import PlaneBuyOption from './modalElements/PlaneBuyOption'; // Adjust the import path as needed
 
-const AircraftModal = ({ planes, onInfoClick, onBuyClick }) => {
+const AircraftModal = ({
+  planes,
+  onInfoClick,
+  onBuyClick,
+  set_opened_modal
+}) => {
   console.log('Planes: ', planes);
   return (
     <>
@@ -13,13 +18,15 @@ const AircraftModal = ({ planes, onInfoClick, onBuyClick }) => {
           flexDirection: 'column'
         }}
       >
-        {planes.map((plane) => (
+        {planes.map((plane, i) => (
           // todo planeoptions instead of planebuyoption here
           <PlaneBuyOption
             key={plane.id}
             plane={plane}
             onInfoClick={onInfoClick}
             onBuyClick={onBuyClick}
+            set_opened_modal={set_opened_modal}
+            iteration={i}
           />
         ))}
       </div>

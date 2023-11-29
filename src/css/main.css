@@ -37,7 +37,8 @@ button {
   font-size: 30px;
 }
 
-input {
+input,
+select {
   all: unset;
   background: transparent;
   border: 5px solid var(--primary, red);

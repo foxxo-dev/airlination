@@ -9,9 +9,12 @@ app.use(express.json());
 app.use(
   cors({
     origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200
+    methods: 'GET,POST',
+    credentials: true,
+    optionsSuccessStatus: 204
   })
 );
+
 app.use(bodyParser.json());
 
 async function saveData(filename, data) {

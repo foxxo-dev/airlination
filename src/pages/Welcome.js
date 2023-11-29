@@ -85,6 +85,7 @@ const Welcome = () => {
         planes={responseData.planes}
         onInfoClick={handleInfoClick}
         onBuyClick={handleBuyClick}
+        set_opened_modal={setOpenedModal}
       />
     );
     setIsModalOpen(true);

@@ -90,7 +90,8 @@ body {
   box-shadow: white 0px 0px 15px -1px;
 }
 
-form input[type='text'] {
+form input[type='text'],
+select {
   all: unset;
   background: white;
   padding: 10px;
@@ -108,4 +109,3 @@ button {
   position: absolute;
   bottom: 1rem;
 }
-

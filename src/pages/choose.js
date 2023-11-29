@@ -90,8 +90,12 @@ const Choose = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <label>LOCATION</label>
-        <select value={location} onChange={(e) => setLocation(e.target.value)}>
-          <option value='' disabled>
+        <select
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          style={{ marginBottom: 10, paddingInline: 25}}
+        >
+          <option value='' disabled style={{opacity: 0.5}}>
             --PLEASE CHOOSE--
           </option>
           {worldAirports.map((airport, index) => (
