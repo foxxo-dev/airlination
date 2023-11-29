@@ -1,5 +1,5 @@
 import React from 'react';
-import PlaneBuyOption from './modalElements/PlaneBuyOption'; // Adjust the import path as needed
+import PlaneDispatch from './modalElements/PlaneDispatch'; // Adjust the import path as needed
 
 const AircraftModal = ({
   planes,
@@ -26,7 +26,7 @@ const AircraftModal = ({
       >
         {planes.map((plane, i) => (
           // todo planeoptions instead of planebuyoption here
-          <PlaneBuyOption
+          <PlaneDispatch
             key={plane.id}
             plane={plane}
             onInfoClick={onInfoClick}

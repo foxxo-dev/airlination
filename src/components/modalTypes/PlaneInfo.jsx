@@ -3,7 +3,7 @@ import React from 'react';
 const PlaneInfo = ({ plane }) => {
   return (
     <div style={{ marginTop: 25, paddingInline: 25 }}>
-      <span>//{plane.id}</span> <br />
+      <strong>//{plane.id}</strong> <br />
       <span>Location: {plane.location}</span> <br />
       <span>Price: {plane.price}xp</span>
       {plane.nextFlightDestination && (
