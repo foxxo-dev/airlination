@@ -49,14 +49,14 @@ app.whenReady().then(() => {
     createWindow();
   } else {
     // Start the server and wait for it to finish before creating the window
-    cp.fork(path.resolve(__dirname, 'server.js'));
+    cp.fork(path.resolve(__dirname, '/server/fileSystem.js'));
   }
 });
 
 // Additional macOS-specific settings
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    !isDev && cp.fork(path.resolve(__dirname, 'server.js'));
+    !isDev && cp.fork(path.resolve(__dirname, '/server/fileSystem.js'));
     createWindow();
   }
 });
