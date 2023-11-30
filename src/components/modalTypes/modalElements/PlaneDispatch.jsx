@@ -43,13 +43,14 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       const handleArrival = () => {
         if (remainingTime <= 0) {
           console.log('MODAL -- ARRIVED');
+          setRemainingTime(-1);
           console.log(plane.nextFlightDestination);
           console.log(plane.location);
           updateLocation(plane.nextFlightDestination, iteration);
           console.log(plane.location);
           clearInterval(timer);
           addXp(15);
-          setRemainingTime(null);
+          window.location.reload();
 
           // Additional logic to reset nextFlightDestination and nextFlightTime in the data
           // getData().then((data) => {
@@ -145,7 +146,9 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       <span>{plane.name}</span>
       <button onClick={() => onInfoClick(plane)}>Info</button>
       <div className='flex' style={{ width: 600 }}>
-        {plane.nextFlightDestination == null || remainingTime == null ? (
+        {plane.nextFlightDestination == null ||
+        remainingTime == null ||
+        remainingTime === -1 ? (
           <>
             <select
               style={{ width: 250 }}
