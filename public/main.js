@@ -1,7 +1,7 @@
 const { app, BrowserWindow, nativeImage } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
-const { exec } = require('child_process');
+const cp = require('child_process');
 
 require('@electron/remote/main').initialize();
 
@@ -49,22 +49,14 @@ app.whenReady().then(() => {
     createWindow();
   } else {
     // Start the server and wait for it to finish before creating the window
-    exec(
-      `node ${path.join(__dirname, '/server/fileSystem.js')}`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error starting server: ${error}`);
-        } else {
-          createWindow();
-        }
-      }
-    );
+    cp.fork(path.resolve(__dirname, 'server.js'));
   }
 });
 
 // Additional macOS-specific settings
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
+    !isDev && cp.fork(path.resolve(__dirname, 'server.js'));
     createWindow();
   }
 });
