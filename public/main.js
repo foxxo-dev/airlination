@@ -1,5 +1,6 @@
 const { app, BrowserWindow, nativeImage } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const isDev = require('electron-is-dev');
 const cp = require('child_process');
 
@@ -30,9 +31,7 @@ function createWindow() {
   mainWindow.webContents.on(
     'did-fail-load',
     (event, errorCode, errorDescription) => {
-      console.error(
-        `Failed to load the page: ${errorCode} - ${errorDescription}`
-      );
+      logToFile(`Failed to load the page: ${errorCode} - ${errorDescription}`);
     }
   );
 
@@ -40,23 +39,42 @@ function createWindow() {
   // mainWindow.webContents.openDevTools();
 }
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+function logToFile(message) {
+  const logFilePath = path.join(__dirname, 'app.log');
+  fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${message}\n`);
+}
+
+// ... (rest of your code)
 
 app.whenReady().then(() => {
   if (isDev) {
     createWindow();
   } else {
     // Start the server and wait for it to finish before creating the window
-    cp.fork(path.resolve(__dirname, '/server/fileSystem.js'));
+    const serverProcess = cp.fork(
+      path.resolve(__dirname, 'server/fileSystem.js')
+    );
+
+    serverProcess.on('error', (err) => {
+      logToFile(`Error starting server: ${err}`);
+    });
+
+    serverProcess.on('exit', (code, signal) => {
+      if (code !== 0) {
+        logToFile(
+          `Server process exited with code ${code} and signal ${signal}`
+        );
+      } else {
+        createWindow();
+      }
+    });
   }
 });
 
 // Additional macOS-specific settings
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    !isDev && cp.fork(path.resolve(__dirname, '/server/fileSystem.js'));
+    !isDev && cp.fork(path.resolve(__dirname, 'server/fileSystem.js'));
     createWindow();
   }
 });
