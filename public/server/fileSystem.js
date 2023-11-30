@@ -69,7 +69,7 @@ app.get('/getData', async (req, res) => {
 
 app.get('/getWorldData', async (req, res) => {
   try {
-    const data = await fs.readFile('world.airsaveinit', 'utf-8');
+    const data = await fs.readFile('../world.airsaveinit', 'utf-8');
     console.log('World Data: ', data);
     if (JSON.stringify(data) === '{}') {
       return;
@@ -89,7 +89,7 @@ app.post('/saveData', (req, res) => {
 app.post('/updateData', async (req, res) => {
   const { key, data } = req.body;
   try {
-    let orig_data = await readData('data.airsave');
+    let orig_data = await readData('../data.airsave');
 
     if (!orig_data.hasOwnProperty(key)) {
       orig_data[key] = {};
@@ -97,7 +97,7 @@ app.post('/updateData', async (req, res) => {
 
     orig_data[key] = data;
 
-    await saveData('data.airsave', orig_data);
+    await saveData('../data.airsave', orig_data);
 
     res.send('Data saved successfully');
   } catch (error) {
@@ -108,11 +108,11 @@ app.post('/updateData', async (req, res) => {
 app.post('/addData', async (req, res) => {
   const { key, value } = req.body;
   try {
-    let orig_data = await readData('data.airsave');
+    let orig_data = await readData('../data.airsave');
     orig_data[key] = orig_data[key] || [];
     orig_data[key].push(value);
 
-    await saveData('data.airsave', orig_data);
+    await saveData('../data.airsave', orig_data);
 
     res.send('Data saved successfully');
   } catch (error) {

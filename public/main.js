@@ -18,7 +18,7 @@ function createWindow() {
       enableRemoteModule: true,
       contextIsolation: false
     },
-    icon: path.join(__dirname, 'ico.png')
+    icon: path.join(__dirname, 'ico.ico')
   });
 
   mainWindow.loadURL(
@@ -62,7 +62,7 @@ app.on('activate', () => {
 });
 
 if (process.platform === 'darwin') {
-  const image = nativeImage.createFromPath(path.join(__dirname, 'ico.png'));
+  const image = nativeImage.createFromPath(path.join(__dirname, 'ico.ico'));
   app.dock.setIcon(image);
   app.setName('Airlination');
 }
