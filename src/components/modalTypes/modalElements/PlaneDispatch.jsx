@@ -38,12 +38,10 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
         } else {
           setRemainingTime(null);
         }
+      };
 
-        if (
-          remainingTime === '0s' ||
-          remainingTime === 0 ||
-          remainingTime === '1s'
-        ) {
+      const handleArrival = () => {
+        if (remainingTime <= 0) {
           console.log('MODAL -- ARRIVED');
           console.log(plane.nextFlightDestination);
           console.log(plane.location);
@@ -52,7 +50,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
           clearInterval(timer);
           addXp(15);
           setRemainingTime(null);
-          // window.location.reload();
+
           // Additional logic to reset nextFlightDestination and nextFlightTime in the data
           // getData().then((data) => {
           //   const currentData = data;
@@ -66,7 +64,10 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       };
 
       // Start a timer to update remaining time every second
-      timer = setInterval(updateRemainingTime, 1000);
+      timer = setInterval(() => {
+        updateRemainingTime();
+        handleArrival();
+      }, 1000);
 
       // Call it initially to set the remaining time
       updateRemainingTime();
@@ -75,7 +76,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
     return () => {
       clearInterval(timer);
     };
-  }, [plane.nextFlightTime, remainingTime, iteration]);
+  }, [plane.nextFlightTime, remainingTime]);
 
   function onInfoClick(plane) {
     set_opened_modal(<PlaneInfo plane={plane} />);
@@ -97,6 +98,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       }
 
       // Use the correct syntax to add the amount to xp
+      console.log(currentData.xp);
       currentData.xp = currentData.xp + amount;
 
       console.log(currentData);
