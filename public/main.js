@@ -40,6 +40,9 @@ function createWindow() {
 }
 
 function logToFile(message) {
+  if (!isDev) return;
+  if (!fs.existsSync(path.join(__dirname, 'app.log')))
+    fs.writeFileSync(path.join(__dirname, 'app.log'), '');
   const logFilePath = path.join(__dirname, 'app.log');
   fs.appendFileSync(logFilePath, `${new Date().toISOString()} - ${message}\n`);
 }

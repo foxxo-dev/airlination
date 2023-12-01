@@ -44,7 +44,14 @@
     },
     "files": [
       "dist/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "build/server/*",
+      "build/main.js",
+      "build/data.airsave",
+      "build/world.airsaveinit",
+      "public/main.js",
+      "public/data.airsave",
+      "public/world.airsaveinit"
     ],
     "win": {
       "target": "nsis"
@@ -57,7 +64,9 @@
     },
     "extraResources": [
       "server",
-      "src/images"
+      "src/images",
+      "public/data.airsave",
+      "public/world.airsaveinit"
     ]
   },
   "eslintConfig": {

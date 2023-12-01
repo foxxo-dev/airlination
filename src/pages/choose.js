@@ -31,6 +31,15 @@ const Choose = () => {
       console.log('World Data: ', world.airports);
     }
 
+    async function checkIfServerOn() {
+      const response = await fetch('http://localhost:3001/getData')
+        .then((r) => {})
+        .catch((e) => {
+          alert('Server is not on. Please turn on the server and try again.');
+          window.location.reload();
+        });
+    }
+
     checkIfData();
     getWorldData_in();
   }, [navigate]);
@@ -93,9 +102,9 @@ const Choose = () => {
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          style={{ marginBottom: 10, paddingInline: 25}}
+          style={{ marginBottom: 10, paddingInline: 25 }}
         >
-          <option value='' disabled style={{opacity: 0.5}}>
+          <option value='' disabled style={{ opacity: 0.5 }}>
             --PLEASE CHOOSE--
           </option>
           {worldAirports.map((airport, index) => (

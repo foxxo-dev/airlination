@@ -32,7 +32,11 @@ async function readData(filename) {
     // Log the file path
     console.log(`Attempting to read data from ${filename}`);
 
-    await fs.stat(filename); // Check if the file exists
+    const doesExist = await fs.stat(filename); // Check if the file exists
+    if (!doesExist) {
+      saveData(filename, {});
+      throw new Error('File does not exist.');
+    }
 
     const base64Data = await fs.readFile(filename, 'utf-8');
     const jsonData = Buffer.from(base64Data, 'base64').toString('utf-8');
@@ -69,14 +73,33 @@ app.get('/getData', async (req, res) => {
 
 app.get('/getWorldData', async (req, res) => {
   try {
+    if (!fs.stat('../world.airsaveinit')) {
+      saveData('../world.airsaveinit', {
+        airports: [
+          'EPWA',
+          'EPKK',
+          'EPKT',
+          'EDDM',
+          'EDDF',
+          'LSZH',
+          'EGLL',
+          'EGKK'
+        ]
+      });
+      const data = await fs.readFile('../world.airsaveinit', 'utf-8');
+      res.json(data);
+    }
+
     const data = await fs.readFile('../world.airsaveinit', 'utf-8');
+    //  check if file exists
+
     console.log('World Data: ', data);
     if (JSON.stringify(data) === '{}') {
       return;
     }
     res.json(data);
   } catch (error) {
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error' + error.message);
   }
 });
 
