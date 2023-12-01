@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getData, saveData, updateData } from '../../../script/serverHandleing'; // Fix typo in import
+import { getData, saveData, updateData } from '../../../script/serverHandleing';
 import PlaneInfo from '../PlaneInfo';
 import displayTimeFormat from '../../../script/planeDispatchScripts';
 import { updateLocation } from '../../../script/updateLocation';
@@ -7,6 +7,8 @@ import { updateLocation } from '../../../script/updateLocation';
 const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
   const [airports, setAirports] = useState([]);
   const [planeDestination, setPlaneDestination] = useState('');
+  const [arrivalHandled, setArrivalHandled] = useState(false);
+
   const [remainingTime, setRemainingTime] = useState(
     plane.nextFlightTime || null
   );
@@ -23,7 +25,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
     };
 
     fetchAirports();
-  }, []); // Empty dependency array ensures that the effect runs once when the component mounts
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -41,7 +43,10 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       };
 
       const handleArrival = () => {
-        if (remainingTime <= 0) {
+        if (
+          (remainingTime === 0 && !arrivalHandled) ||
+          (remainingTime === '0s' && !arrivalHandled)
+        ) {
           console.log('MODAL -- ARRIVED');
           setRemainingTime(-1);
           console.log(plane.nextFlightDestination);
@@ -50,7 +55,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
           console.log(plane.location);
           clearInterval(timer);
           addXp(15);
-          window.location.reload();
+          setArrivalHandled(true);
 
           // Additional logic to reset nextFlightDestination and nextFlightTime in the data
           // getData().then((data) => {
@@ -86,29 +91,15 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
   async function addXp(amount) {
     setRemainingTime(null);
 
-    // Assuming getData and saveData are asynchronous functions that return promises
-
     try {
-      // Use await to get the current data
       const currentData = await getData();
-      console.log(currentData);
-
-      // Check if currentData.xp is undefined or null (not just falsy)
       if (currentData.xp === undefined || currentData.xp === null) {
         currentData.xp = 0;
       }
-
-      // Use the correct syntax to add the amount to xp
-      console.log(currentData.xp);
       currentData.xp = currentData.xp + amount;
-
-      console.log(currentData);
-
-      // Use await to save the modified data
       await saveData(currentData);
     } catch (error) {
       console.error('Error in addXp:', error);
-      // Handle the error appropriately, maybe throw it again or log it
     }
   }
 
@@ -120,11 +111,9 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
       currentData.planes[iteration].nextFlightDestination = planeDestination;
 
       const currentTime = Math.round(new Date().getTime());
-      const timeInMsToAdd = 60000; // 60000 is 1 minute in milliseconds
+      const timeInMsToAdd = 60000;
       currentData.planes[iteration].nextFlightTime =
         currentTime + timeInMsToAdd;
-
-      //   1200 is the amount of time in seconds that the plane will take to reach its destination
 
       await saveData(currentData);
       setPlaneDestination('');
@@ -154,7 +143,7 @@ const PlaneDispatch = ({ plane, iteration, set_opened_modal }) => {
               style={{ width: 250 }}
               value={planeDestination}
               onChange={(e) => setPlaneDestination(e.target.value)}
-              defaultValue='' // Use defaultValue instead of selected attribute
+              defaultValue=''
             >
               <option value='' disabled style={{ opacity: 0.5 }}>
                 --SELECT--
