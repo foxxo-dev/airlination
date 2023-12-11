@@ -1,66 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import '../css/main.css';
 import { useParams } from 'react-router-dom';
+import { getWorldData } from '../script/serverHandleing.js';
+import Modal_hdl from '../script/modalHandleing.js';
+import { Budgeting, AirCost, Map, Modal, AircraftModal } from '../components';
+import { fetchDataConverted } from '../script/fetchDataConverted.js';
 import {
-  getData,
-  getWorldData,
-  updateData
-} from '../script/serverHandleing.js';
-import { saveInitialData } from '../script/saveInitialData';
-import { initData } from '../constants/initData.js';
-import {
-  Budgeting,
-  AirCost,
-  Map,
-  Modal,
-  AircraftModal,
-  CountryModal
-} from '../components';
-import AirportsModal from '../components/modalTypes/AirportsModal.jsx';
+  responseData,
+  worldData,
+  setWorldData,
+  isModalOpen
+} from '../script/appStates.js';
+
+// Imports ToDo: make loading screen do something
 
 const Welcome = () => {
   const { name, id, location } = useParams();
-  const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
-
-  const [responseData, setResponseData] = useState({});
-  const [worldData, setWorldData] = useState({ airports: [''] });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openedModal, setOpenedModal] = useState(
-    <AircraftModal aircraft_data={responseData.planes} />
-  );
-  const [xp, setXp] = useState(0);
-  const [lvl, setLvl] = useState(0);
+  // const type = id[0] === 'w' ? 'WORLD' : 'DOMESTIC';
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getData();
-        console.log('BEFORE CHECKING RESPONSE: ', res);
-        console.log('PLANES LIST: ', res?.planes);
-
-        if (!res || JSON.stringify(res) === '{}') {
-          console.log('No data saved, saving initial data');
-          console.log('Initial data:', initData(name, id));
-          saveInitialData(initData(name, id, location));
-
-          const newData = await getData();
-          setResponseData(newData);
-
-          console.log('RES after init: ', newData); // Use newData instead of responseData
-
-          // Do not reload the entire page
-          // window.location.reload();
-        } else {
-          console.log('Existing data exists, data is ' + JSON.stringify(res));
-          setResponseData(res);
-          setXp(res.xp);
-          setLvl(res.lvl);
-        }
-      } catch (err) {
-        alert('Application Exited With Error: ' + err);
-      }
-    };
-
     const fetchWorldData = async () => {
       try {
         const res = await getWorldData();
@@ -74,39 +32,9 @@ const Welcome = () => {
     // Avoid calling window.location.reload() here
 
     fetchWorldData();
-    fetchData();
+    // name, id, location, setResponseData, setXp, setLvl
+    fetchDataConverted(name, id, location);
   }, [name, id, location]); // Add location to dependencies if needed
-
-  const open_aircraft_modal = () => {
-    console.log(responseData, ' RESPONSE DATA');
-    console.log(responseData.planes, ' PLANES IN RESPONSE DATA');
-    setOpenedModal(
-      <AircraftModal
-        planes={responseData.planes}
-        onInfoClick={handleInfoClick}
-        onBuyClick={handleBuyClick}
-        set_opened_modal={setOpenedModal}
-      />
-    );
-    setIsModalOpen(true);
-  };
-
-  const open_airports_modal = () => {
-    if (worldData && worldData.airports) {
-      setOpenedModal(
-        <AirportsModal userData={responseData} worldData={worldData.airports} />
-      );
-      setIsModalOpen(true);
-    } else {
-      console.log('World Data:', worldData);
-      console.log("World Data's Airports:", worldData?.airports);
-      console.error('worldData or worldData.airports is undefined');
-    }
-  };
-
-  const close_modal = () => {
-    setIsModalOpen(false);
-  };
 
   const handleInfoClick = (plane) => {
     console.log(`Info clicked for plane: ${plane.name}`);
@@ -119,14 +47,19 @@ const Welcome = () => {
   return (
     <div className='container'>
       <Budgeting
-        close_modal={close_modal}
-        open_aircraft_modal={open_aircraft_modal}
+        close_modal={Modal_hdl.close_modal()}
+        open_aircraft_modal={Modal_hdl.open_aircraft_modal(
+          responseData,
+          AircraftModal,
+          handleInfoClick,
+          handleBuyClick
+        )}
       />
-      <AirCost setXp={setXp} airportModal={open_airports_modal} />
-      <Map lvl={lvl ? lvl : 0} xp={xp ? xp : 0} />
-      {isModalOpen && (
-        <Modal modalContent={openedModal} close_modal={close_modal} />
-      )}
+      <AirCost
+        airportModal={Modal_hdl.open_airports_modal(worldData, responseData)}
+      />
+      <Map />
+      {isModalOpen && <Modal close_modal={Modal_hdl.close_modal()} />}
     </div>
   );
 };

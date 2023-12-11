@@ -1,6 +1,7 @@
 import { addData, getData, getWorldData, updateData } from './serverHandleing';
+import { setXp } from './appStates';
 
-async function unlockAirport(airport, sxp, reset) {
+async function unlockAirport(airport, reset) {
   const data = await getData();
   console.log(data);
   let unlocked_airports = await data.unlockedLocation;
@@ -26,7 +27,7 @@ async function unlockAirport(airport, sxp, reset) {
         console.log(unlocked_airports);
         const data_xp = data.xp - 25;
         await updateData('xp', data_xp);
-        sxp(data.xp - 25);
+        setXp(data.xp - 25);
         await addData('unlockedLocation', current_airport);
         reset('');
         console.log('Updated Airport Data!');

@@ -4,7 +4,7 @@ import { getData, getWorldData } from '../script/serverHandleing';
 
 var airports = [];
 
-const AirCost = ({ setXp, airportModal }) => {
+const AirCost = ({  airportModal }) => {
   const [airportIcao, setAirportIcao] = useState('');
 
   async function getUnlockedAirports() {
@@ -14,10 +14,10 @@ const AirCost = ({ setXp, airportModal }) => {
   }
 
   useEffect(() => {
-    async function functions() {
+    async function _function() {
       airports = await getUnlockedAirports();
     }
-    functions();
+    _function();
     console.log(airports);
   }, []);
 
@@ -33,7 +33,7 @@ const AirCost = ({ setXp, airportModal }) => {
           onChange={(e) => setAirportIcao(e.target.value)}
         />
         <button
-          onClick={() => unlockAirport(airportIcao, setXp, setAirportIcao)}
+          onClick={() => unlockAirport(airportIcao,  setAirportIcao)}
         >
           Unlock Airport
         </button>

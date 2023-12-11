@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-
-const Modal = ({ modalContent, close_modal, width = 400, height = 600 }) => {
+import { openedModal as modalContent } from '../script/appStates';
+const Modal = ({ close_modal, width = 400, height = 600 }) => {
   const [position, setPosition] = useState({
     x: (window.innerWidth - width) / 2,
     y: (window.innerHeight - height) / 2
